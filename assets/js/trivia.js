@@ -53,17 +53,20 @@ let correctAnswer;
 let timer;
 let correctCount = 0;
 let wrongCount = 0;
+let goodGuess;
+let badGuess;
 let seconds;
 let timeLeft;
 
+//Check to see if game is running, if so- reset and go to next question
 function isGameRunning(){
     if (triviaIndex < 2){
-        //if the question index is less than 6, then give the next question
-        gameRunning = true;
+        //gameRunning = true;
         reset();
     }
     else {
-        gameRunning = false;
+        //gameRunning = false;
+       // gameOver();
     }
 }
 
@@ -74,7 +77,6 @@ $play.click(function(){
 })
 
 function reset(){
-    //let triviaCounter = 0;
     timeLeft = 5;
     countdown();
     nextQuestion(triviaIndex);
@@ -86,10 +88,10 @@ function nextQuestion(triviaIndex){
     $question.text(q.question);
     answer = q.answer;
     //$answer.text(answer);
-    $a = q.options.a;
-    $b = q.options.b;
-    $c = q.options.c;
-    $d = q.options.d;
+    $a.text(q.options.a);
+    $b.text(q.options.b);
+    $c.text(q.options.c);
+    $d.text(q.options.d);
 }
 
 //create a countdown timer and write to DOM
@@ -97,11 +99,8 @@ function countdown() {
     if (timeLeft == 0) {
       clearTimeout(seconds);
       wrongGuess();
-      //loss for time out
-      //check to see if game is running
+      //time runs out = loss
     } else {
-      //update time in DOM
-      //listen for user input
       $timer.text(timeLeft);
       timeLeft--;
     }
@@ -109,9 +108,13 @@ function countdown() {
 
 $option.on('click', function(){
     if($guess == correctAnswer){
+        goodGuess = $(this);
+        goodGuess.addClass('correct');
         correctGuess();
     }
     else {
+        badGuess = $(this);
+        badGuess.addClass('wrong');
         wrongGuess();
     }
 });
@@ -120,21 +123,26 @@ function correctGuess(){
     triviaIndex++;
     correctCount++;
     $wins.text(correctCount);
-    isGameRunning();  
+    setTimeout(function(){
+        goodGuess.removeClass('correct');
+        isGameRunning();  
+    }, 5000);
+    //resets game loop: check to see if the game should continue running
 }
 
 function wrongGuess(){
     triviaIndex++;
     wrongCount++;
     $losses.text(wrongCount);
-    isGameRunning();
+    setTimeout(function(){
+        badGuess.removeClass('wrong');
+        isGameRunning();  
+    }, 5000);
+    //resets game loop: check to see if the game should continue running
 }
 
-/*function gameOver(){
-    if (triviaCounter === 8){
-        alert('You got ' + correctCount + 'questions right, and ' + wrongCount + 'questions wrong.')
-    }
-    else {
-        gameRunning = true;
-    }
-}*/
+//make this better than an alert...
+function gameOver(){
+    alert('You got ' + correctCount + 'questions right, and ' + wrongCount + 'questions wrong.')
+    $button.text('Play Again?');
+}
