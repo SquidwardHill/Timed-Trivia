@@ -1,1 +1,1 @@
-**HEADY CRYSTALS HANGMAN TRIVIA!**
+# Hangman Trivia Game | Javascript
